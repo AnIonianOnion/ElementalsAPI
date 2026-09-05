@@ -43,4 +43,8 @@ public class ElementalsAPI {
     public static Element getElement(String elementName) {
         return ElementRegistry.get(elementName);
     }
+
+    public static Ailment getAilment(String ailmentName) {
+        return AilmentRegistry.get(ailmentName);
+    }
 }
