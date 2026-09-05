@@ -23,4 +23,21 @@ public class ElementalsAPI {
     public static Set<String> getAllElementNames() {
         return getElementsRegistry().keySet();
     }
+
+    public static Set<String> getAllAilmentNames() {
+        return getAilmentsRegistry().keySet();
+    }
+
+    public static void regElement(String elementName) {
+        ElementRegistry.regElement(elementName);
+    }
+
+    public static void regAilment(String ailmentName) {
+        AilmentRegistry.regAilment(ailmentName);
+    }
+
+    public static void regAilment(String ailmentName, Ailment ailment) {
+        AilmentRegistry.regAilment(ailmentName, ailment);
+    }
+
 }
