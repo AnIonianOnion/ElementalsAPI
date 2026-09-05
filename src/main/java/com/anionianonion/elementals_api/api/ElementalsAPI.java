@@ -40,4 +40,7 @@ public class ElementalsAPI {
         AilmentRegistry.regAilment(ailmentName, ailment);
     }
 
+    public static Element getElement(String elementName) {
+        return ElementRegistry.get(elementName);
+    }
 }

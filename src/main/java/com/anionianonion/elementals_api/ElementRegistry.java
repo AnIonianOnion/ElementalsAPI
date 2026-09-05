@@ -14,7 +14,7 @@ public class ElementRegistry {
         return elementRegistry;
     }
 
-    public Element get(String elementName) {
+    public static Element get(String elementName) {
         return elementRegistry.get(elementName);
     }
 }
