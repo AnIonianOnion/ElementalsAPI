@@ -12,16 +12,18 @@ public class Ailment {
     private boolean isDamagingAilment;
     private boolean canBeInflictedFromCrit;
     private float durationInSeconds;
+    private int maxStacksOnEntity;
 
     public Ailment(String name) {
         this.name = name;
     }
 
-    public Ailment(String name, boolean isDamagingAilment, boolean canBeInflictedFromCrit, float durationInSeconds) {
+    public Ailment(String name, boolean isDamagingAilment, boolean canBeInflictedFromCrit, float durationInSeconds, int maxStacksOnEntity) {
         this.name = name;
         this.isDamagingAilment = isDamagingAilment;
         this.canBeInflictedFromCrit = canBeInflictedFromCrit;
         this.durationInSeconds = durationInSeconds;
+        this.maxStacksOnEntity = maxStacksOnEntity;
     }
 
     public String getName() {
@@ -49,11 +51,19 @@ public class Ailment {
     }
 
     public float getDurationInSeconds() {
-        return durationInSeconds;
+        return this.durationInSeconds;
     }
 
     public void setDurationInSeconds(float durationInSeconds) {
         this.durationInSeconds = durationInSeconds;
+    }
+
+    public int getMaxStacksOnEntity() {
+        return this.maxStacksOnEntity;
+    }
+
+    public void setMaxStacksOnEntity(int maxStacksOnEntity) {
+        this.maxStacksOnEntity = maxStacksOnEntity;
     }
 }
 

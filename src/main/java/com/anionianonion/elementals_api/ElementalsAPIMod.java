@@ -33,7 +33,7 @@ import org.slf4j.Logger;
 public class ElementalsAPIMod
 {
     // Define mod id in a common place for everything to reference
-    public static final String MODID = "elementals_api";
+    public static final String MODID = "anionianonions_elementals_api";
     // Directly reference a slf4j logger
     public static final Logger LOGGER = LogUtils.getLogger();
 
