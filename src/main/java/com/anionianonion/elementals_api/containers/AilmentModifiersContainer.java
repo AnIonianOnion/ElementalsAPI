@@ -1,11 +1,14 @@
-package com.anionianonion.elementals_api;
+package com.anionianonion.elementals_api.containers;
 
 import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 
-//used by attacker
+//central system used by attacker
 public class AilmentModifiersContainer {
 
     //a container inside the LivingEntity that tells if there are any special modifiers to ailments.
@@ -34,24 +37,42 @@ public class AilmentModifiersContainer {
 
     /// each String is an id for a registered element or ailment.
     //Three Dragons
-    private final Multimap<String, String> ailmentsToInflictForWhichElement = ArrayListMultimap.create();
+    //needed to change from Multimap to Hashmultimap to avoid duplicates
+    private final HashMultimap<String, String> ailmentsToInflictForWhichElement = HashMultimap.create();
+
+    //ailments such as Ghostflame, which may not have a specific element it comes froms
+    private final Set<String> specialAilmentsPlayerCanInflict = new HashSet<>();
 
     //need a way to know the max number of stacks for each ailment
-    private final HashMap<String, Integer> maxStacksForAilment = new HashMap<>();
+    private final HashMap<String, Integer> extraMaxStacksForAilment = new HashMap<>();
 
-    //keeps track of ailment replacements like Scorch instead of Ignite
+    //keeps track of ailment replacements like if the player should inflict Scorch instead of Ignite
     private final HashMap<String, String> ailmentReplacements = new HashMap<>();
 
 
-    public Multimap<String, String> getAilmentsToInflictForWhichElement() {
+    public HashMultimap<String, String> getAilmentsToInflictForWhichElement() {
         return ailmentsToInflictForWhichElement;
     }
 
-    public HashMap<String, Integer> getMaxStacksForAilment() {
-        return maxStacksForAilment;
+    public HashMap<String, Integer> getExtraMaxStacksForAilment() {
+        return extraMaxStacksForAilment;
     }
 
     public HashMap<String, String> getAilmentReplacements() {
         return ailmentReplacements;
+    }
+
+    public Set<String> getSpecialAilmentsPlayerCanInflict() {
+        return this.specialAilmentsPlayerCanInflict;
+    }
+
+    public void init() {
+        ailmentsToInflictForWhichElement.clear();
+        specialAilmentsPlayerCanInflict.clear();
+        extraMaxStacksForAilment.clear();
+        ailmentReplacements.clear();
+
+
+
     }
 }

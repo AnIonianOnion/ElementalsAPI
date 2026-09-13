@@ -1,4 +1,4 @@
-package com.anionianonion.elementals_api;
+package com.anionianonion.elementals_api.data_classes;
 
 
 //Rabbit and Steel style ailments
@@ -13,17 +13,19 @@ public class Ailment {
     private boolean canBeInflictedFromCrit;
     private float durationInSeconds;
     private int maxStacksOnEntity;
+    private boolean guranteeInflictChance;
 
     public Ailment(String name) {
         this.name = name;
     }
 
-    public Ailment(String name, boolean isDamagingAilment, boolean canBeInflictedFromCrit, float durationInSeconds, int maxStacksOnEntity) {
+    public Ailment(String name, boolean isDamagingAilment, boolean canBeInflictedFromCrit, float durationInSeconds, int maxStacksOnEntity, boolean guaranteeInflictChance) {
         this.name = name;
         this.isDamagingAilment = isDamagingAilment;
         this.canBeInflictedFromCrit = canBeInflictedFromCrit;
         this.durationInSeconds = durationInSeconds;
         this.maxStacksOnEntity = maxStacksOnEntity;
+        this.guranteeInflictChance = guaranteeInflictChance;
     }
 
     public String getName() {
@@ -64,6 +66,18 @@ public class Ailment {
 
     public void setMaxStacksOnEntity(int maxStacksOnEntity) {
         this.maxStacksOnEntity = maxStacksOnEntity;
+    }
+
+    public boolean isGuranteeInflictChance() {
+        return this.guranteeInflictChance;
+    }
+
+    public void setGuranteeInflictChance(boolean guranteeInflictChance) {
+        this.guranteeInflictChance = guranteeInflictChance;
+    }
+
+    public void onExpire() {
+
     }
 }
 

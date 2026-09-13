@@ -1,10 +1,10 @@
-package com.anionianonion.elementals_api;
+package com.anionianonion.elementals_api.registries;
 
 import com.google.common.collect.HashMultimap;
 
 import java.util.Set;
 
-public class ElementToAilmentsRegistry {
+public class DefaultElementToAilmentsRegistry {
 
     //using HashMultimap instead of ArraylistMultimap in order to prevent having a key with duplicate values.
     private static final HashMultimap<String, String> elementsToAilmentsRegistry = HashMultimap.create();

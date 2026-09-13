@@ -1,4 +1,6 @@
-package com.anionianonion.elementals_api;
+package com.anionianonion.elementals_api.registries;
+
+import com.anionianonion.elementals_api.data_classes.Element;
 
 import java.util.HashMap;
 
