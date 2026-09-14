@@ -9,11 +9,15 @@ public class ElementCategoryRegistry {
     private static final HashMap<String, ElementCategory> elementCategoryRegistry = new HashMap<>();
 
     public static void regAilmentCategory(ElementCategory elementCategory) {
-        elementCategoryRegistry.put(elementCategory.name(), elementCategory);
+        elementCategoryRegistry.put(elementCategory.getName(), elementCategory);
     }
 
     public static HashMap<String, ElementCategory> get() {
         return elementCategoryRegistry;
+    }
+
+    public static ElementCategory get(String elementCategoryName) {
+        return elementCategoryRegistry.get(elementCategoryName);
     }
 
     public static boolean containsKey(String elementCategoryName) {

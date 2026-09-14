@@ -8,7 +8,8 @@ package com.anionianonion.elementals_api.data_classes;
 //poison -> 20% of base phys + base chaos damage per second for 2 seconds
 public class Ailment {
 
-    private String name;
+    private final String name;
+    private Element elementItComesFrom;
     private boolean isDamagingAilment;
     private boolean canBeInflictedFromCrit;
     private int maxStacksOnEntity;
@@ -30,8 +31,12 @@ public class Ailment {
         return this.name;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public Element getElementItComesFrom() {
+        return this.elementItComesFrom;
+    }
+
+    public void setElementItComesFrom(Element element) {
+        this.elementItComesFrom = element;
     }
 
     public boolean isDamagingAilment() {

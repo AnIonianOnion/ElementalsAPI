@@ -1,7 +1,10 @@
 package com.anionianonion.elementals_api.registries;
 
+import com.anionianonion.elementals_api.data_classes.Element;
+import com.anionianonion.elementals_api.data_classes.ElementCategory;
 import com.google.common.collect.HashMultimap;
 
+import java.util.HashSet;
 import java.util.Set;
 
 public class ElementCategoryToElementsRegistry {
@@ -14,6 +17,13 @@ public class ElementCategoryToElementsRegistry {
         if(!validKeys) return;
 
         elementCategoryToElementsRegistry.put(elementCategoryName, elementName);
+
+        Element element = ElementRegistry.get(elementName);
+        ElementCategory elementCategory = ElementCategoryRegistry.get(elementCategoryName);
+
+        element.setElementCategory(elementCategory);
+        elementCategory.addElement(element);
+
     }
 
     public static void setElementsForElementCategory(Set<String> elementNames, String elementCategoryName) {
@@ -29,6 +39,15 @@ public class ElementCategoryToElementsRegistry {
 
         elementCategoryToElementsRegistry.get(elementCategoryName).clear();
         elementCategoryToElementsRegistry.putAll(elementCategoryName, elementNames);
+
+        ElementCategory elementCategory = ElementCategoryRegistry.get(elementCategoryName);
+        Set<Element> elements = new HashSet<>();
+        for(var elementName : elementNames) {
+            Element element = ElementRegistry.get(elementName);
+            element.setElementCategory(elementCategory);
+            elements.add(element);
+        }
+        elementCategory.setElements(elements);
     }
 
     public static HashMultimap<String, String> get() {

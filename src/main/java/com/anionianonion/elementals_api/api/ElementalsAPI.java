@@ -2,9 +2,8 @@ package com.anionianonion.elementals_api.api;
 
 import com.anionianonion.elementals_api.data_classes.Ailment;
 import com.anionianonion.elementals_api.data_classes.Element;
-import com.anionianonion.elementals_api.registries.AilmentRegistry;
-import com.anionianonion.elementals_api.registries.ElementRegistry;
-import com.anionianonion.elementals_api.registries.DefaultElementToAilmentsRegistry;
+import com.anionianonion.elementals_api.data_classes.ElementCategory;
+import com.anionianonion.elementals_api.registries.*;
 import com.google.common.collect.HashMultimap;
 
 import java.util.HashMap;
@@ -58,5 +57,13 @@ public class ElementalsAPI {
 
     public static void setAilmentsForElement(Set<String> ailments, String elementName) {
         DefaultElementToAilmentsRegistry.setAilmentsForElement(ailments, elementName);
+    }
+
+    public static void regAilmentCategory(ElementCategory elementCategory) {
+        ElementCategoryRegistry.regAilmentCategory(elementCategory);
+    }
+
+    public static void setElementsForElementCategory(Set<String> elementNames, String elementCategoryName) {
+        ElementCategoryToElementsRegistry.setElementsForElementCategory(elementNames, elementCategoryName);
     }
 }
