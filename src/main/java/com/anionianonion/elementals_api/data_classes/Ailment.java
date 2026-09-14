@@ -11,21 +11,19 @@ public class Ailment {
     private String name;
     private boolean isDamagingAilment;
     private boolean canBeInflictedFromCrit;
-    private float durationInSeconds;
     private int maxStacksOnEntity;
-    private boolean guranteeInflictChance;
+    private boolean guaranteeInflictChance;
 
     public Ailment(String name) {
         this.name = name;
     }
 
-    public Ailment(String name, boolean isDamagingAilment, boolean canBeInflictedFromCrit, float durationInSeconds, int maxStacksOnEntity, boolean guaranteeInflictChance) {
+    public Ailment(String name, boolean isDamagingAilment, boolean canBeInflictedFromCrit, int maxStacksOnEntity, boolean guaranteeInflictChance) {
         this.name = name;
         this.isDamagingAilment = isDamagingAilment;
         this.canBeInflictedFromCrit = canBeInflictedFromCrit;
-        this.durationInSeconds = durationInSeconds;
         this.maxStacksOnEntity = maxStacksOnEntity;
-        this.guranteeInflictChance = guaranteeInflictChance;
+        this.guaranteeInflictChance = guaranteeInflictChance;
     }
 
     public String getName() {
@@ -52,6 +50,7 @@ public class Ailment {
         this.canBeInflictedFromCrit = canBeInflictedFromCrit;
     }
 
+    /*
     public float getDurationInSeconds() {
         return this.durationInSeconds;
     }
@@ -59,6 +58,7 @@ public class Ailment {
     public void setDurationInSeconds(float durationInSeconds) {
         this.durationInSeconds = durationInSeconds;
     }
+     */
 
     public int getMaxStacksOnEntity() {
         return this.maxStacksOnEntity;
@@ -68,12 +68,12 @@ public class Ailment {
         this.maxStacksOnEntity = maxStacksOnEntity;
     }
 
-    public boolean isGuranteeInflictChance() {
-        return this.guranteeInflictChance;
+    public boolean isGuaranteeInflictChance() {
+        return this.guaranteeInflictChance;
     }
 
-    public void setGuranteeInflictChance(boolean guranteeInflictChance) {
-        this.guranteeInflictChance = guranteeInflictChance;
+    public void setGuaranteeInflictChance(boolean guaranteeInflictChance) {
+        this.guaranteeInflictChance = guaranteeInflictChance;
     }
 
     public void onExpire() {

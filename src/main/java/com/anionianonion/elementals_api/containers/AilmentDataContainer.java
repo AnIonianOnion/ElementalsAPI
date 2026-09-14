@@ -24,4 +24,12 @@ public class AilmentDataContainer {
         }
     }
 
+    public void addAilment(String ailmentId, AilmentInstance ailmentInstance) {
+        ailmentsAffectedBy.put(ailmentId, ailmentInstance);
+    }
+
+    public boolean containsAilment(String ailmentId) {
+        return ailmentsAffectedBy.containsKey(ailmentId);
+    }
+
 }

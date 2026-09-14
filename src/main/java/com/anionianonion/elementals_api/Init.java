@@ -21,18 +21,17 @@ public class Init {
         ElementCategoryRegistry.regAilmentCategory(new ElementCategory("elemental"));
         var elementalIds = new HashSet<String>();
         elementalIds.add("fire");
-        elementalIds.add("cold");
+        elementalIds.add("ice");
         elementalIds.add("lightning");
 
         ElementCategoryToElementsRegistry.setElementsForElementCategory(elementalIds, "elemental");
 
-        var ghostFlame = new Ailment("ghostflame", true, false, 5, 1, true);
+        var ghostFlame = new Ailment("ghostflame", true, false, 1, true);
         ElementalsAPI.regAilment(ghostFlame);
 
         ElementalsAPI.regAilment("burning");
         var burning = ElementalsAPI.getAilment("burning");
         burning.setDamagingAilment(true);
-        burning.setDurationInSeconds(4);
         burning.setCanBeInflictedFromCrit(true);
         burning.setMaxStacksOnEntity(1);
     }
