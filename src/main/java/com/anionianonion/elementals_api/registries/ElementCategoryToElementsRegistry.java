@@ -35,7 +35,7 @@ public class ElementCategoryToElementsRegistry {
         return elementCategoryToElementsRegistry;
     }
 
-    public Set<String> get(String elementName) {
-        return elementCategoryToElementsRegistry.get(elementName);
+    public Set<String> get(String elementCategoryName) {
+        return elementCategoryToElementsRegistry.get(elementCategoryName);
     }
 }
