@@ -19,4 +19,8 @@ public class ElementRegistry {
     public static Element get(String elementName) {
         return elementRegistry.get(elementName);
     }
+
+    public static boolean containsKey(String elementName) {
+        return elementRegistry.containsKey(elementName);
+    }
 }

@@ -15,4 +15,8 @@ public class ElementCategoryRegistry {
     public static HashMap<String, ElementCategory> get() {
         return elementCategoryRegistry;
     }
+
+    public static boolean containsKey(String elementCategoryName) {
+        return elementCategoryRegistry.containsKey(elementCategoryName);
+    }
 }

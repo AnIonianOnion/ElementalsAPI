@@ -31,4 +31,8 @@ public class AilmentRegistry {
     public static Ailment get(String ailmentName) {
         return ailmentRegistry.get(ailmentName);
     }
+
+    public static boolean containsKey(String ailmentName) {
+        return ailmentRegistry.containsKey(ailmentName);
+    }
 }
