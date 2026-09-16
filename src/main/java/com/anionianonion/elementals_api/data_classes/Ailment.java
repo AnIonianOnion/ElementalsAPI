@@ -3,6 +3,10 @@ package com.anionianonion.elementals_api.data_classes;
 
 //Rabbit and Steel style ailments
 
+import net.minecraft.world.entity.LivingEntity;
+
+import java.util.function.BiConsumer;
+
 //PoE style ailments
 //ignite -> 90% of base fire damage per second for 4 seconds
 //poison -> 20% of base phys + base chaos damage per second for 2 seconds
@@ -10,21 +14,36 @@ public class Ailment {
 
     private final String name;
     private Element elementItComesFrom;
+    private int durationInSeconds;
     private boolean isDamagingAilment;
     private boolean canBeInflictedFromCrit;
     private int maxStacksOnEntity;
     private boolean guaranteeInflictChance;
+    private float dpsRatio = 1;
+
+    private BiConsumer<LivingEntity, AilmentInstance> onExpire = (livingEntity, ailmentInstance) -> {};
+    private BiConsumer<LivingEntity, AilmentInstance> onTick = (livingEntity, ailmentInstance) -> {};
 
     public Ailment(String name) {
         this.name = name;
     }
-
-    public Ailment(String name, boolean isDamagingAilment, boolean canBeInflictedFromCrit, int maxStacksOnEntity, boolean guaranteeInflictChance) {
+    public Ailment(String name, int durationInSeconds, boolean isDamagingAilment, boolean canBeInflictedFromCrit, int maxStacksOnEntity, boolean guaranteeInflictChance) {
         this.name = name;
+        this.durationInSeconds = durationInSeconds;
         this.isDamagingAilment = isDamagingAilment;
         this.canBeInflictedFromCrit = canBeInflictedFromCrit;
         this.maxStacksOnEntity = maxStacksOnEntity;
         this.guaranteeInflictChance = guaranteeInflictChance;
+    }
+    public Ailment(String name, int durationInSeconds, boolean isDamagingAilment, boolean canBeInflictedFromCrit, int maxStacksOnEntity, boolean guaranteeInflictChance, BiConsumer<LivingEntity, AilmentInstance> onExpire, BiConsumer<LivingEntity, AilmentInstance> onTick) {
+        this.name = name;
+        this.durationInSeconds = durationInSeconds;
+        this.isDamagingAilment = isDamagingAilment;
+        this.canBeInflictedFromCrit = canBeInflictedFromCrit;
+        this.maxStacksOnEntity = maxStacksOnEntity;
+        this.guaranteeInflictChance = guaranteeInflictChance;
+        this.onExpire = onExpire;
+        this.onTick = onTick;
     }
 
     public String getName() {
@@ -55,15 +74,14 @@ public class Ailment {
         this.canBeInflictedFromCrit = canBeInflictedFromCrit;
     }
 
-    /*
-    public float getDurationInSeconds() {
+
+    public int getDurationInSeconds() {
         return this.durationInSeconds;
     }
 
-    public void setDurationInSeconds(float durationInSeconds) {
+    public void setDurationInSeconds(int durationInSeconds) {
         this.durationInSeconds = durationInSeconds;
     }
-     */
 
     public int getMaxStacksOnEntity() {
         return this.maxStacksOnEntity;
@@ -81,8 +99,28 @@ public class Ailment {
         this.guaranteeInflictChance = guaranteeInflictChance;
     }
 
-    public void onExpire() {
+    public void setOnExpire(BiConsumer<LivingEntity, AilmentInstance> onExpire) {
+        this.onExpire = onExpire;
+    }
 
+    public BiConsumer<LivingEntity, AilmentInstance> getOnExpire() {
+        return this.onExpire;
+    }
+
+    public void setOnTick(BiConsumer<LivingEntity, AilmentInstance> onTick) {
+        this.onTick = onTick;
+    }
+
+    public BiConsumer<LivingEntity, AilmentInstance> getOnTick() {
+        return onTick;
+    }
+
+    public float getDpsRatio() {
+        return this.dpsRatio;
+    }
+
+    public void setDpsRatio(float dpsRatio) {
+        this.dpsRatio = dpsRatio;
     }
 }
 

@@ -24,7 +24,7 @@ public class Init {
 
         ElementalsAPI.setElementsForElementCategory(elementalIds, "elemental");
 
-        var ghostFlame = new Ailment("ghostflame", true, false, 1, true);
+        var ghostFlame = new Ailment("ghostflame", 5, true, false, 1, true);
         ElementalsAPI.regAilment(ghostFlame);
 
         ElementalsAPI.regAilment("burning");
