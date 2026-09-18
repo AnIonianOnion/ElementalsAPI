@@ -3,6 +3,7 @@ package com.anionianonion.elementals_api.data_classes;
 
 //Rabbit and Steel style ailments
 
+import com.anionianonion.elementals_api.ElementalsAPIMod;
 import net.minecraft.world.entity.LivingEntity;
 
 import java.util.function.BiConsumer;
@@ -49,27 +50,21 @@ public class Ailment {
     public String getName() {
         return this.name;
     }
-
     public Element getElementItComesFrom() {
         return this.elementItComesFrom;
     }
-
     public void setElementItComesFrom(Element element) {
         this.elementItComesFrom = element;
     }
-
     public boolean isDamagingAilment() {
         return this.isDamagingAilment;
     }
-
     public void setDamagingAilment(boolean damagingAilment) {
         this.isDamagingAilment = damagingAilment;
     }
-
     public boolean isCanBeInflictedFromCrit() {
         return this.canBeInflictedFromCrit;
     }
-
     public void setCanBeInflictedFromCrit(boolean canBeInflictedFromCrit) {
         this.canBeInflictedFromCrit = canBeInflictedFromCrit;
     }
@@ -78,42 +73,40 @@ public class Ailment {
     public int getDurationInSeconds() {
         return this.durationInSeconds;
     }
-
     public void setDurationInSeconds(int durationInSeconds) {
         this.durationInSeconds = durationInSeconds;
     }
-
     public int getMaxStacksOnEntity() {
         return this.maxStacksOnEntity;
     }
-
     public void setMaxStacksOnEntity(int maxStacksOnEntity) {
         this.maxStacksOnEntity = maxStacksOnEntity;
     }
-
     public boolean isGuaranteeInflictChance() {
         return this.guaranteeInflictChance;
     }
-
     public void setGuaranteeInflictChance(boolean guaranteeInflictChance) {
         this.guaranteeInflictChance = guaranteeInflictChance;
     }
-
+    public BiConsumer<LivingEntity, AilmentInstance> getOnTick() {
+        ElementalsAPIMod.LOGGER.info(name + " Ailment#getOnTick called");
+        return onTick;
+    }
+    public void setOnTick(BiConsumer<LivingEntity, AilmentInstance> onTick) {
+        ElementalsAPIMod.LOGGER.info(name + "Ailment#setOnTick called");
+        this.onTick = onTick;
+    }
+    public BiConsumer<LivingEntity, AilmentInstance> getOnExpire() {
+        ElementalsAPIMod.LOGGER.info(name + "Ailment#getOnExpire called");
+        return this.onExpire;
+    }
     public void setOnExpire(BiConsumer<LivingEntity, AilmentInstance> onExpire) {
+        ElementalsAPIMod.LOGGER.info(name + "Ailment#setOnExpire called");
         this.onExpire = onExpire;
     }
 
-    public BiConsumer<LivingEntity, AilmentInstance> getOnExpire() {
-        return this.onExpire;
-    }
 
-    public void setOnTick(BiConsumer<LivingEntity, AilmentInstance> onTick) {
-        this.onTick = onTick;
-    }
 
-    public BiConsumer<LivingEntity, AilmentInstance> getOnTick() {
-        return onTick;
-    }
 
     public float getDpsRatio() {
         return this.dpsRatio;

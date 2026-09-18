@@ -1,8 +1,13 @@
 package com.anionianonion.elementals_api.data_classes;
 
+import com.anionianonion.advanced_arpg_attributes_api.api.AdvancedARPGAttributesAPI;
+import com.anionianonion.elementals_api.ElementalsAPIMod;
 import com.anionianonion.elementals_api.api.ElementalsAPI;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.LivingEntity;
 
+import java.util.HashSet;
+import java.util.Set;
 import java.util.function.BiConsumer;
 
 //a copy of an Ailment that is currently affecting a LivingEntity
@@ -11,12 +16,15 @@ public class AilmentInstance {
     //this ailment instance is stored on the entity's AilmentDataContainer capability, but it's still needed in order to call onExpire & onTick functions
     private final LivingEntity affected;
 
-    private BiConsumer<LivingEntity, AilmentInstance> onExpire;
-    private BiConsumer<LivingEntity, AilmentInstance> onTick;
+    private BiConsumer<LivingEntity, AilmentInstance> onExpire = (livingEntity, ailmentInstance) -> {};
+    private BiConsumer<LivingEntity, AilmentInstance> onTick = (livingEntity, ailmentInstance) -> {};;
 
     private int stacksCount, maxStacksCount, absoluteMaxStacksCount;
     private int remainingDurationInTicks;
     private int baseDamagePerStackCount;
+
+    private String ailmentSourceName;
+    private String elementIdOfSourceAilment;
 
     //used for ailments such as Ghostflame, where there isn't a default behavior for the ailment.
     public AilmentInstance(LivingEntity target, int durationInSeconds, int baseDamagePerStack, int maxStacksCount, int absoluteMaxStacksCount) {
@@ -37,8 +45,13 @@ public class AilmentInstance {
         this.affected = target;
 
         Ailment source = ElementalsAPI.getAilment(ailmentIdToCopyFrom);
+        if(source == null) return;
+
+        this.ailmentSourceName = source.getName();
+        this.elementIdOfSourceAilment = source.getElementItComesFrom().getName();
         this.remainingDurationInTicks = source.getDurationInSeconds() * 20;
         this.baseDamagePerStackCount = Math.round(sourceBaseDamage * source.getDpsRatio());
+        //todo: not called, so source is null
         this.onTick = source.getOnTick();
         this.onExpire = source.getOnExpire();
     }
@@ -90,9 +103,28 @@ public class AilmentInstance {
         this.onTick = onTick;
     }
     public void onTick() {
+        ElementalsAPIMod.LOGGER.info("AilmentInstance#onTick called");
         this.onTick.accept(affected, this);
     }
     public BiConsumer<LivingEntity, AilmentInstance> getOnTick() {
         return this.onTick;
+    }
+
+    public int getFinalDPSPerStack() {
+        Set<String> damageTags = new HashSet<>();
+        damageTags.add("damage");
+        damageTags.add("self");
+        damageTags.add("dot");
+
+        ElementalsAPIMod.LOGGER.info("get finalDPS per stack called");
+        if(this.ailmentSourceName != null && this.elementIdOfSourceAilment != null) {
+            damageTags.add(this.ailmentSourceName);
+            damageTags.add(this.elementIdOfSourceAilment);
+        }
+
+        Set<ResourceLocation> attributeRLs = AdvancedARPGAttributesAPI.getFilteredAttributes(damageTags);
+        var data = AdvancedARPGAttributesAPI.getData(affected, attributeRLs);
+
+        return (int) (this.baseDamagePerStackCount * (1 + data[1]) * (1 + data[2]));
     }
 }

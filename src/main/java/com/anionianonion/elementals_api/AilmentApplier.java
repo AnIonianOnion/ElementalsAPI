@@ -46,6 +46,7 @@ public class AilmentApplier {
 
         //but someone can easily abuse the overrides, like an ability with low damage and low cooldown, will be overrided by an ability with higher damage.
         //if this is the case, must override the cooldown as well.
+        ElementalsAPIMod.LOGGER.info("apply ailment #2 called");
     }
 
     public static void applyAilment(String ailmentId, LivingEntity target, int sourceDamage) {

@@ -1,5 +1,6 @@
 package com.anionianonion.elementals_api.containers;
 
+import com.anionianonion.elementals_api.ElementalsAPIMod;
 import com.anionianonion.elementals_api.data_classes.AilmentInstance;
 
 import java.util.HashMap;
@@ -12,20 +13,28 @@ public class AilmentDataContainer {
 
     public void tick() {
 
+        ElementalsAPIMod.LOGGER.info("AilmentDataContainer#tick called");
+
         for(var entry : ailmentsAffectedBy.entrySet()) {
             var instance = entry.getValue();
+            var key = entry.getKey();
+
             instance.tickDuration();
+            //forgot this part vvv which is why bleed wasn't working :sob:
+            instance.onTick();
 
             //if duration = 0, call expire function
             //Ghostflame from Rabbit & Steel deals an arbitrary damage value when it expires
             if(instance.getRemainingDurationInTicks() <= 0) {
                 instance.onExpire();
+                ailmentsAffectedBy.remove(key);
             }
         }
     }
 
     public void addAilment(String ailmentId, AilmentInstance ailmentInstance) {
         ailmentsAffectedBy.put(ailmentId, ailmentInstance);
+        ElementalsAPIMod.LOGGER.info("add ailment called");
     }
 
     public boolean containsAilment(String ailmentId) {
