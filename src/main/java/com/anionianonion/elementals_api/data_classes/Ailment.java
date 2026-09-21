@@ -63,7 +63,7 @@ public class Ailment {
     public void setDamagingAilment(boolean damagingAilment) {
         this.isDamagingAilment = damagingAilment;
     }
-    public boolean isCanBeInflictedFromCrit() {
+    public boolean canBeInflictedFromCrit() {
         return this.canBeInflictedFromCrit;
     }
     public void setCanBeInflictedFromCrit(boolean canBeInflictedFromCrit) {
