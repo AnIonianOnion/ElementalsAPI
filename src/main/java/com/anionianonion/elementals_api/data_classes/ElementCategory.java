@@ -6,6 +6,7 @@ import java.util.Set;
 public class ElementCategory {
 
     private final String name;
+    //global default vv
     private Set<Element> elements = new HashSet<>();
 
     public ElementCategory(String name) {

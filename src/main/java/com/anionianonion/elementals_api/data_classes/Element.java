@@ -7,6 +7,8 @@ public class Element {
 
     private final String name;
     private ElementCategory elementCategory;
+
+    //global default vv
     private Set<Ailment> ailments = new HashSet<>();
 
     public Element(String name) {

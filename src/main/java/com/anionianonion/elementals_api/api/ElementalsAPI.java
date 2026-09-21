@@ -66,4 +66,13 @@ public class ElementalsAPI {
     public static void setElementsForElementCategory(Set<String> elementNames, String elementCategoryName) {
         ElementCategoryToElementsRegistry.setElementsForElementCategory(elementNames, elementCategoryName);
     }
+
+    public static boolean containsElementId(String elementName) {
+        return ElementRegistry.containsKey(elementName);
+    }
+
+    public static boolean containsAilmentId(String ailmentName) {
+        return AilmentRegistry.containsKey(ailmentName);
+    }
+
 }

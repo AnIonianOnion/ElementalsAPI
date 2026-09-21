@@ -14,13 +14,14 @@ import java.util.function.BiConsumer;
 public class Ailment {
 
     private final String name;
+    //global default vv
     private Element elementItComesFrom;
     private int durationInSeconds;
     private boolean isDamagingAilment;
     private boolean canBeInflictedFromCrit;
     private int maxStacksOnEntity;
     private boolean guaranteeInflictChance;
-    private float dpsRatio = 1;
+    private float ratioOfDPStoHitDamage = 1;
 
     private BiConsumer<LivingEntity, AilmentInstance> onExpire = (livingEntity, ailmentInstance) -> {};
     private BiConsumer<LivingEntity, AilmentInstance> onTick = (livingEntity, ailmentInstance) -> {};
@@ -108,12 +109,12 @@ public class Ailment {
 
 
 
-    public float getDpsRatio() {
-        return this.dpsRatio;
+    public float getRatioOfDPStoHitDamage() {
+        return this.ratioOfDPStoHitDamage;
     }
 
-    public void setDpsRatio(float dpsRatio) {
-        this.dpsRatio = dpsRatio;
+    public void setRatioOfDPStoHitDamage(float ratioOfDPStoHitDamage) {
+        this.ratioOfDPStoHitDamage = ratioOfDPStoHitDamage;
     }
 }
 

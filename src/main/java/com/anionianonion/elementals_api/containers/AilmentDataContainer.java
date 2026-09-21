@@ -15,7 +15,10 @@ public class AilmentDataContainer {
 
         ElementalsAPIMod.LOGGER.info("AilmentDataContainer#tick called");
 
-        for(var entry : ailmentsAffectedBy.entrySet()) {
+        //to prevent concurrent modification
+        var copy = new HashMap<>(ailmentsAffectedBy);
+
+        for(var entry : copy.entrySet()) {
             var instance = entry.getValue();
             var key = entry.getKey();
 

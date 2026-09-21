@@ -21,7 +21,8 @@ public class AilmentInstance {
 
     private int stacksCount, maxStacksCount, absoluteMaxStacksCount;
     private int remainingDurationInTicks;
-    private int baseDamagePerStackCount;
+    private int baseDamage;
+    private float dpsMultiplier;
 
     private String ailmentSourceName;
     private String elementIdOfSourceAilment;
@@ -30,7 +31,7 @@ public class AilmentInstance {
     public AilmentInstance(LivingEntity target, int durationInSeconds, int baseDamagePerStack, int maxStacksCount, int absoluteMaxStacksCount) {
         this.affected = target;
         this.remainingDurationInTicks = durationInSeconds * 20;
-        this.baseDamagePerStackCount = baseDamagePerStack;
+        this.baseDamage = baseDamagePerStack;
         this.stacksCount = 1;
 
         if(absoluteMaxStacksCount <= 0) this.absoluteMaxStacksCount = 1;
@@ -50,7 +51,8 @@ public class AilmentInstance {
         this.ailmentSourceName = source.getName();
         this.elementIdOfSourceAilment = source.getElementItComesFrom().getName();
         this.remainingDurationInTicks = source.getDurationInSeconds() * 20;
-        this.baseDamagePerStackCount = Math.round(sourceBaseDamage * source.getDpsRatio());
+        this.baseDamage = sourceBaseDamage;
+        this.dpsMultiplier = source.getRatioOfDPStoHitDamage();
         //todo: not called, so source is null
         this.onTick = source.getOnTick();
         this.onExpire = source.getOnExpire();
@@ -86,6 +88,12 @@ public class AilmentInstance {
     }
     public void tickDuration() {
         this.remainingDurationInTicks--;
+    }
+    public float getDpsMultiplier() {
+        return this.dpsMultiplier;
+    }
+    public void setDpsMultiplier(float multiplier) {
+        this.dpsMultiplier = multiplier;
     }
 
     public void setOnExpire(BiConsumer<LivingEntity, AilmentInstance> onExpire) {
@@ -125,6 +133,6 @@ public class AilmentInstance {
         Set<ResourceLocation> attributeRLs = AdvancedARPGAttributesAPI.getFilteredAttributes(damageTags);
         var data = AdvancedARPGAttributesAPI.getData(affected, attributeRLs);
 
-        return (int) (this.baseDamagePerStackCount * (1 + data[1]) * (1 + data[2]));
+        return Math.round(this.baseDamage * (1 + data[1]) * (1 + data[2]));
     }
 }

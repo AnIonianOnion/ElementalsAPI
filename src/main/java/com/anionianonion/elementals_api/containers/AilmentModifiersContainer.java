@@ -1,18 +1,16 @@
 package com.anionianonion.elementals_api.containers;
 
+import com.anionianonion.elementals_api.ElementalsAPIMod;
 import com.anionianonion.elementals_api.api.ElementalsAPI;
-import com.google.common.collect.ArrayListMultimap;
+import com.anionianonion.elementals_api.data_classes.AilmentInstance;
+import com.anionianonion.elementals_api.util.RandomHelpers;
 import com.google.common.collect.HashMultimap;
-import com.google.common.collect.Multimap;
-import net.minecraft.data.structures.NbtToSnbt;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
 import net.minecraftforge.common.util.INBTSerializable;
 
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
 
 //central system used by attacker
 public class AilmentModifiersContainer implements INBTSerializable<CompoundTag> {
@@ -43,15 +41,11 @@ public class AilmentModifiersContainer implements INBTSerializable<CompoundTag> 
 
     /// each String is an id for a registered element or ailment.
     //Three Dragons
-    //needed to change from Multimap to Hashmultimap to avoid duplicates
     private final HashMultimap<String, String> ailmentsToInflictForWhichElement = HashMultimap.create();
-
     //ailments such as Ghostflame, which may not have a specific element it comes froms
-    private final Set<String> specialAilmentsPlayerCanInflict = new HashSet<>();
-
+    private final HashMap<String, AilmentInstance> specialAilmentsPlayerCanInflict = new HashMap<>();
     //need a way to know the max number of stacks for each ailment
     private final HashMap<String, Integer> extraMaxStacksForAilment = new HashMap<>();
-
     //keeps track of ailment replacements like if the player should inflict Scorch instead of Ignite
     private final HashMap<String, String> ailmentReplacements = new HashMap<>();
 
@@ -59,17 +53,24 @@ public class AilmentModifiersContainer implements INBTSerializable<CompoundTag> 
     public HashMultimap<String, String> getAilmentsToInflictForWhichElement() {
         return ailmentsToInflictForWhichElement;
     }
-
     public HashMap<String, Integer> getExtraMaxStacksForAilment() {
         return extraMaxStacksForAilment;
     }
-
     public HashMap<String, String> getAilmentReplacements() {
         return ailmentReplacements;
     }
-
-    public Set<String> getSpecialAilmentsPlayerCanInflict() {
+    public HashMap<String, AilmentInstance> getSpecialAilmentsPlayerCanInflict() {
         return this.specialAilmentsPlayerCanInflict;
+    }
+
+    public void addInflictableAilmentToElement(String ailmentId, String elementId) {
+        if(!RandomHelpers.areRegistered(elementId, ailmentId)) return;
+        ailmentsToInflictForWhichElement.put(elementId, ailmentId);
+    }
+
+    public void removeInflictableAilmentFromElement(String ailmentId, String elementId) {
+        if(!RandomHelpers.areRegistered(elementId, ailmentId)) return;
+        ailmentsToInflictForWhichElement.remove(elementId, ailmentId);
     }
 
     public void init() {
@@ -108,10 +109,15 @@ public class AilmentModifiersContainer implements INBTSerializable<CompoundTag> 
 
         compoundTag.put("ailmentsToInflictForWhichElement", ailmentsToInflictForWhichElementTag);
 
-            var specialAilmentsPlayerCanInflictTag = new ListTag();
+            var specialAilmentsPlayerCanInflictTag = new CompoundTag();
 
-            for(var ailmentId : specialAilmentsPlayerCanInflict) {
-                specialAilmentsPlayerCanInflictTag.add(StringTag.valueOf(ailmentId));
+            for(var entry : specialAilmentsPlayerCanInflict.entrySet()) {
+                var ailmentId = entry.getKey();
+
+                var ailmentInstanceTag = new CompoundTag();
+
+                //todo: finish hashing out ailmentInstanceTag based on required ailmentInstance data.
+                specialAilmentsPlayerCanInflictTag.put(ailmentId, ailmentInstanceTag);
             }
 
         compoundTag.put("specialAilmentsPlayerCanInflict", specialAilmentsPlayerCanInflictTag);
@@ -140,7 +146,6 @@ public class AilmentModifiersContainer implements INBTSerializable<CompoundTag> 
 
         return compoundTag;
     }
-
     @Override
     public void deserializeNBT(CompoundTag nbt) {
         var ailmentsToInflictForWhichElementTag = (CompoundTag) nbt.get("ailmentsToInflictForWhichElement");
@@ -159,13 +164,15 @@ public class AilmentModifiersContainer implements INBTSerializable<CompoundTag> 
                 }
             }
 
-        var specialAilmentsPlayerCanInflictTag = (ListTag) nbt.get("specialAilmentsPlayerCanInflict");
+        var specialAilmentsPlayerCanInflictTag = (CompoundTag) nbt.get("specialAilmentsPlayerCanInflict");
 
             if(specialAilmentsPlayerCanInflictTag != null) {
 
-                for(var ailmentIdTag : specialAilmentsPlayerCanInflictTag) {
-                    var ailmentId = ailmentIdTag.getAsString();
-                    specialAilmentsPlayerCanInflict.add(ailmentId);
+                for(var ailmentIdKey : specialAilmentsPlayerCanInflictTag.getAllKeys()) {
+                    var ailmentInstanceTag = specialAilmentsPlayerCanInflictTag.get(ailmentIdKey);
+
+                    //todo: implement serialization of either ailmentInstance or ailment, preferably the instance
+                    //specialAilmentsPlayerCanInflict.put(ailmentIdKey, new AilmentInstance(ailmentIdKey));
                 }
             }
 
@@ -199,4 +206,48 @@ public class AilmentModifiersContainer implements INBTSerializable<CompoundTag> 
 
         return defaultAilmentModifiersContainer;
     }
+
+    public static void logContainer(AilmentModifiersContainer container) {
+        log("==elements and ailments==");
+        var elementAndAilments = "";
+        for(var entry : container.ailmentsToInflictForWhichElement.entries()) {
+            var elementId = entry.getKey();
+            var ailmentIds = entry.getValue();
+
+            var message = elementId + ": " + ailmentIds + "\n";
+            elementAndAilments += message;
+        }
+        log(elementAndAilments);
+
+        log("==special ailments==");
+        log(container.specialAilmentsPlayerCanInflict.toString());
+
+        log("==extra max stacks==");
+        var ailmentsAndMaxStacks = "";
+        for(var entry : container.extraMaxStacksForAilment.entrySet()) {
+            var ailmentId = entry.getKey();
+            var maxStacks = entry.getValue();
+
+            var message = ailmentId + ": " + maxStacks + "\n";
+            ailmentsAndMaxStacks += message;
+        }
+        log(ailmentsAndMaxStacks);
+
+        log("==ailment replacements==");
+        var ailmentReplacements = "";
+        for(var entry : container.ailmentReplacements.entrySet()) {
+            var ailmentId = entry.getKey();
+            var replacementAilmentId = entry.getValue();
+
+            var message = ailmentId + ": " + replacementAilmentId + "\n";
+            ailmentReplacements += message;
+        }
+        log(ailmentReplacements);
+    }
+
+    private static void log(String message) {
+        ElementalsAPIMod.LOGGER.info(message);
+    }
+
+
 }
