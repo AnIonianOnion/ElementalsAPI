@@ -23,8 +23,9 @@ public class Ailment {
     private boolean guaranteeInflictChance;
     private float ratioOfDPStoHitDamage = 1;
 
-    private BiConsumer<LivingEntity, AilmentInstance> onExpire = (livingEntity, ailmentInstance) -> {};
+    private BiConsumer<LivingEntity, AilmentInstance> onApply = (livingEntity, ailmentInstance) -> {};
     private BiConsumer<LivingEntity, AilmentInstance> onTick = (livingEntity, ailmentInstance) -> {};
+    private BiConsumer<LivingEntity, AilmentInstance> onExpire = (livingEntity, ailmentInstance) -> {};
 
     public Ailment(String name) {
         this.name = name;
@@ -37,15 +38,16 @@ public class Ailment {
         this.maxStacksOnEntity = maxStacksOnEntity;
         this.guaranteeInflictChance = guaranteeInflictChance;
     }
-    public Ailment(String name, int durationInSeconds, boolean isDamagingAilment, boolean canBeInflictedFromCrit, int maxStacksOnEntity, boolean guaranteeInflictChance, BiConsumer<LivingEntity, AilmentInstance> onExpire, BiConsumer<LivingEntity, AilmentInstance> onTick) {
+    public Ailment(String name, int durationInSeconds, boolean isDamagingAilment, boolean canBeInflictedFromCrit, int maxStacksOnEntity, boolean guaranteeInflictChance, BiConsumer<LivingEntity, AilmentInstance> onApply, BiConsumer<LivingEntity, AilmentInstance> onTick, BiConsumer<LivingEntity, AilmentInstance> onExpire) {
         this.name = name;
         this.durationInSeconds = durationInSeconds;
         this.isDamagingAilment = isDamagingAilment;
         this.canBeInflictedFromCrit = canBeInflictedFromCrit;
         this.maxStacksOnEntity = maxStacksOnEntity;
         this.guaranteeInflictChance = guaranteeInflictChance;
-        this.onExpire = onExpire;
+        this.onApply = onApply;
         this.onTick = onTick;
+        this.onExpire = onExpire;
     }
 
     public String getName() {
@@ -89,9 +91,16 @@ public class Ailment {
     public void setGuaranteeInflictChance(boolean guaranteeInflictChance) {
         this.guaranteeInflictChance = guaranteeInflictChance;
     }
+
+    public BiConsumer<LivingEntity, AilmentInstance> getOnApply() {
+        return this.onApply;
+    }
+    public void setOnApply(BiConsumer<LivingEntity, AilmentInstance> onApply) {
+        this.onApply = onApply;
+    }
     public BiConsumer<LivingEntity, AilmentInstance> getOnTick() {
         ElementalsAPIMod.LOGGER.info(name + " Ailment#getOnTick called");
-        return onTick;
+        return this.onTick;
     }
     public void setOnTick(BiConsumer<LivingEntity, AilmentInstance> onTick) {
         ElementalsAPIMod.LOGGER.info(name + "Ailment#setOnTick called");
@@ -107,12 +116,9 @@ public class Ailment {
     }
 
 
-
-
     public float getRatioOfDPStoHitDamage() {
         return this.ratioOfDPStoHitDamage;
     }
-
     public void setRatioOfDPStoHitDamage(float ratioOfDPStoHitDamage) {
         this.ratioOfDPStoHitDamage = ratioOfDPStoHitDamage;
     }

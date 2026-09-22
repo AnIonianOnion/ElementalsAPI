@@ -13,8 +13,6 @@ public class AilmentDataContainer {
 
     public void tick() {
 
-        ElementalsAPIMod.LOGGER.info("AilmentDataContainer#tick called");
-
         //to prevent concurrent modification
         var copy = new HashMap<>(ailmentsAffectedBy);
 

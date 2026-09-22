@@ -16,8 +16,9 @@ public class AilmentInstance {
     //this ailment instance is stored on the entity's AilmentDataContainer capability, but it's still needed in order to call onExpire & onTick functions
     private final LivingEntity affected;
 
+    private BiConsumer<LivingEntity, AilmentInstance> onApply = (livingEntity, ailmentInstance) -> {};
+    private BiConsumer<LivingEntity, AilmentInstance> onTick = (livingEntity, ailmentInstance) -> {};
     private BiConsumer<LivingEntity, AilmentInstance> onExpire = (livingEntity, ailmentInstance) -> {};
-    private BiConsumer<LivingEntity, AilmentInstance> onTick = (livingEntity, ailmentInstance) -> {};;
 
     private int stacksCount, maxStacksCount, absoluteMaxStacksCount;
     private int remainingDurationInTicks;
@@ -54,6 +55,7 @@ public class AilmentInstance {
         this.baseDamage = sourceBaseDamage;
         this.dpsMultiplier = source.getRatioOfDPStoHitDamage();
         //todo: not called, so source is null
+        this.onApply = source.getOnApply();
         this.onTick = source.getOnTick();
         this.onExpire = source.getOnExpire();
     }
@@ -96,26 +98,36 @@ public class AilmentInstance {
         this.dpsMultiplier = multiplier;
     }
 
-    public void setOnExpire(BiConsumer<LivingEntity, AilmentInstance> onExpire) {
-        this.onExpire = onExpire;
+
+    /// Higher Order Functions
+    public BiConsumer<LivingEntity, AilmentInstance> getOnApply() {
+        return this.onApply;
     }
-    //changed to BiConsumers from BiFunctions, because BiConsumers don't return anything.
-    public void onExpire() {
-        this.onExpire.accept(affected, this);
+    public void setOnApply(BiConsumer<LivingEntity, AilmentInstance> onApply) {
+        this.onApply = onApply;
     }
-    public BiConsumer<LivingEntity, AilmentInstance> getOnExpire() {
-        return this.onExpire;
+    public void onApply() {
+        this.onApply.accept(affected, this);
     }
 
+    public BiConsumer<LivingEntity, AilmentInstance> getOnTick() {
+        return this.onTick;
+    }
     public void setOnTick(BiConsumer<LivingEntity, AilmentInstance> onTick) {
         this.onTick = onTick;
     }
     public void onTick() {
-        ElementalsAPIMod.LOGGER.info("AilmentInstance#onTick called");
         this.onTick.accept(affected, this);
     }
-    public BiConsumer<LivingEntity, AilmentInstance> getOnTick() {
-        return this.onTick;
+
+    public BiConsumer<LivingEntity, AilmentInstance> getOnExpire() {
+        return this.onExpire;
+    }
+    public void setOnExpire(BiConsumer<LivingEntity, AilmentInstance> onExpire) {
+        this.onExpire = onExpire;
+    }
+    public void onExpire() {
+        this.onExpire.accept(affected, this);
     }
 
     public int getFinalDPSPerStack() {
@@ -124,14 +136,13 @@ public class AilmentInstance {
         damageTags.add("self");
         damageTags.add("dot");
 
-        ElementalsAPIMod.LOGGER.info("get finalDPS per stack called");
         if(this.ailmentSourceName != null && this.elementIdOfSourceAilment != null) {
             damageTags.add(this.ailmentSourceName);
             damageTags.add(this.elementIdOfSourceAilment);
         }
 
         Set<ResourceLocation> attributeRLs = AdvancedARPGAttributesAPI.getFilteredAttributes(damageTags);
-        var data = AdvancedARPGAttributesAPI.getData(affected, attributeRLs);
+        var data = AdvancedARPGAttributesAPI.getData(this.affected, attributeRLs);
 
         return Math.round(this.baseDamage * (1 + data[1]) * (1 + data[2]));
     }

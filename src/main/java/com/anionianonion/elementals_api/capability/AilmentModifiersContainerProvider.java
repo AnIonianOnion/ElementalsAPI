@@ -10,7 +10,7 @@ import org.jetbrains.annotations.Nullable;
 
 public class AilmentModifiersContainerProvider implements ICapabilityProvider {
 
-    private final AilmentModifiersContainer backend = new AilmentModifiersContainer();
+    private final AilmentModifiersContainer backend = AilmentModifiersContainer.getDefault();
 
     private final LazyOptional<AilmentModifiersContainer> optional =
             LazyOptional.of(() -> backend);
