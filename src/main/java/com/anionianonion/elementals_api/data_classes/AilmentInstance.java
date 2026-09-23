@@ -1,7 +1,6 @@
 package com.anionianonion.elementals_api.data_classes;
 
 import com.anionianonion.advanced_arpg_attributes_api.api.AdvancedARPGAttributesAPI;
-import com.anionianonion.elementals_api.ElementalsAPIMod;
 import com.anionianonion.elementals_api.api.ElementalsAPI;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.LivingEntity;
@@ -55,9 +54,9 @@ public class AilmentInstance {
         this.baseDamage = sourceBaseDamage;
         this.dpsMultiplier = source.getRatioOfDPStoHitDamage();
         //todo: not called, so source is null
-        this.onApply = source.getOnApply();
-        this.onTick = source.getOnTick();
-        this.onExpire = source.getOnExpire();
+        this.onApply = source.getDefenderOnApply();
+        this.onTick = source.getDefenderOnTick();
+        this.onExpire = source.getDefenderOnExpire();
     }
 
     //stacks

@@ -23,31 +23,17 @@ public class Ailment {
     private boolean guaranteeInflictChance;
     private float ratioOfDPStoHitDamage = 1;
 
-    private BiConsumer<LivingEntity, AilmentInstance> onApply = (livingEntity, ailmentInstance) -> {};
-    private BiConsumer<LivingEntity, AilmentInstance> onTick = (livingEntity, ailmentInstance) -> {};
-    private BiConsumer<LivingEntity, AilmentInstance> onExpire = (livingEntity, ailmentInstance) -> {};
+    private BiConsumer<LivingEntity, AilmentInstance> defenderOnApply = (defender, ailmentInstance) -> {};
+    private BiConsumer<LivingEntity, AilmentInstance> defenderOnTick = (defender, ailmentInstance) -> {};
+    private BiConsumer<LivingEntity, AilmentInstance> defenderOnExpire = (defender, ailmentInstance) -> {};
 
+    private BiConsumer<LivingEntity, AilmentInstance> attackerOnApply = (attacker, ailmentInstance) -> {};
+    private BiConsumer<LivingEntity, AilmentInstance> attackerOnTick = (attacker, ailmentInstance) -> {};
+    private BiConsumer<LivingEntity, AilmentInstance> attackerOnExpire = (attacker, ailmentInstance) -> {};
+
+    //there's too many field variables to set them in a constructor. It's probably better to make this the only constructor.
     public Ailment(String name) {
         this.name = name;
-    }
-    public Ailment(String name, int durationInSeconds, boolean isDamagingAilment, boolean canBeInflictedFromCrit, int maxStacksOnEntity, boolean guaranteeInflictChance) {
-        this.name = name;
-        this.durationInSeconds = durationInSeconds;
-        this.isDamagingAilment = isDamagingAilment;
-        this.canBeInflictedFromCrit = canBeInflictedFromCrit;
-        this.maxStacksOnEntity = maxStacksOnEntity;
-        this.guaranteeInflictChance = guaranteeInflictChance;
-    }
-    public Ailment(String name, int durationInSeconds, boolean isDamagingAilment, boolean canBeInflictedFromCrit, int maxStacksOnEntity, boolean guaranteeInflictChance, BiConsumer<LivingEntity, AilmentInstance> onApply, BiConsumer<LivingEntity, AilmentInstance> onTick, BiConsumer<LivingEntity, AilmentInstance> onExpire) {
-        this.name = name;
-        this.durationInSeconds = durationInSeconds;
-        this.isDamagingAilment = isDamagingAilment;
-        this.canBeInflictedFromCrit = canBeInflictedFromCrit;
-        this.maxStacksOnEntity = maxStacksOnEntity;
-        this.guaranteeInflictChance = guaranteeInflictChance;
-        this.onApply = onApply;
-        this.onTick = onTick;
-        this.onExpire = onExpire;
     }
 
     public String getName() {
@@ -92,27 +78,27 @@ public class Ailment {
         this.guaranteeInflictChance = guaranteeInflictChance;
     }
 
-    public BiConsumer<LivingEntity, AilmentInstance> getOnApply() {
-        return this.onApply;
+    public BiConsumer<LivingEntity, AilmentInstance> getDefenderOnApply() {
+        return this.defenderOnApply;
     }
-    public void setOnApply(BiConsumer<LivingEntity, AilmentInstance> onApply) {
-        this.onApply = onApply;
+    public void setDefenderOnApply(BiConsumer<LivingEntity, AilmentInstance> defenderOnApply) {
+        this.defenderOnApply = defenderOnApply;
     }
-    public BiConsumer<LivingEntity, AilmentInstance> getOnTick() {
+    public BiConsumer<LivingEntity, AilmentInstance> getDefenderOnTick() {
         ElementalsAPIMod.LOGGER.info(name + " Ailment#getOnTick called");
-        return this.onTick;
+        return this.defenderOnTick;
     }
-    public void setOnTick(BiConsumer<LivingEntity, AilmentInstance> onTick) {
+    public void setDefenderOnTick(BiConsumer<LivingEntity, AilmentInstance> defenderOnTick) {
         ElementalsAPIMod.LOGGER.info(name + "Ailment#setOnTick called");
-        this.onTick = onTick;
+        this.defenderOnTick = defenderOnTick;
     }
-    public BiConsumer<LivingEntity, AilmentInstance> getOnExpire() {
+    public BiConsumer<LivingEntity, AilmentInstance> getDefenderOnExpire() {
         ElementalsAPIMod.LOGGER.info(name + "Ailment#getOnExpire called");
-        return this.onExpire;
+        return this.defenderOnExpire;
     }
-    public void setOnExpire(BiConsumer<LivingEntity, AilmentInstance> onExpire) {
+    public void setDefenderOnExpire(BiConsumer<LivingEntity, AilmentInstance> defenderOnExpire) {
         ElementalsAPIMod.LOGGER.info(name + "Ailment#setOnExpire called");
-        this.onExpire = onExpire;
+        this.defenderOnExpire = defenderOnExpire;
     }
 
 
