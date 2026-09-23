@@ -78,6 +78,25 @@ public class Ailment {
         this.guaranteeInflictChance = guaranteeInflictChance;
     }
 
+    public BiConsumer<LivingEntity, AilmentInstance> getAttackerOnApply() {
+        return this.attackerOnApply;
+    }
+    public void setAttackerOnApply(BiConsumer<LivingEntity, AilmentInstance> attackerOnApply) {
+        this.attackerOnApply = attackerOnApply;
+    }
+    public BiConsumer<LivingEntity, AilmentInstance> getAttackerOnTick() {
+        return this.attackerOnTick;
+    }
+    public void setAttackerOnTick(BiConsumer<LivingEntity, AilmentInstance> attackerOnTick) {
+        this.attackerOnTick = attackerOnTick;
+    }
+    public BiConsumer<LivingEntity, AilmentInstance> getAttackerOnExpire() {
+        return attackerOnExpire;
+    }
+    public void setAttackerOnExpire(BiConsumer<LivingEntity, AilmentInstance> attackerOnExpire) {
+        this.attackerOnExpire = attackerOnExpire;
+    }
+
     public BiConsumer<LivingEntity, AilmentInstance> getDefenderOnApply() {
         return this.defenderOnApply;
     }
@@ -85,19 +104,15 @@ public class Ailment {
         this.defenderOnApply = defenderOnApply;
     }
     public BiConsumer<LivingEntity, AilmentInstance> getDefenderOnTick() {
-        ElementalsAPIMod.LOGGER.info(name + " Ailment#getOnTick called");
         return this.defenderOnTick;
     }
     public void setDefenderOnTick(BiConsumer<LivingEntity, AilmentInstance> defenderOnTick) {
-        ElementalsAPIMod.LOGGER.info(name + "Ailment#setOnTick called");
         this.defenderOnTick = defenderOnTick;
     }
     public BiConsumer<LivingEntity, AilmentInstance> getDefenderOnExpire() {
-        ElementalsAPIMod.LOGGER.info(name + "Ailment#getOnExpire called");
         return this.defenderOnExpire;
     }
     public void setDefenderOnExpire(BiConsumer<LivingEntity, AilmentInstance> defenderOnExpire) {
-        ElementalsAPIMod.LOGGER.info(name + "Ailment#setOnExpire called");
         this.defenderOnExpire = defenderOnExpire;
     }
 

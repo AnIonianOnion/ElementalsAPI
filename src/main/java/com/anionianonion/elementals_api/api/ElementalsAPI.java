@@ -39,6 +39,10 @@ public class ElementalsAPI {
         AilmentRegistry.regAilment(ailmentName);
     }
 
+    public static Ailment regAilmentAndGet(String ailmentName) {
+        AilmentRegistry.regAilmentAndGet(ailmentName);
+    }
+
     public static void regAilment(Ailment ailment) {
         AilmentRegistry.regAilment(ailment.getName(), ailment);
     }

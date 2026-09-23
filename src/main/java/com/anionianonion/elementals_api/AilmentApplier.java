@@ -10,12 +10,12 @@ public class AilmentApplier {
     /**
     a way to apply different versions of the same ailment. In Rabbit and Steel, Poison might deal 50dps for 5s = 250 damage, but it could also deal 30ps for 4s = 120 damage.
      */
-    public static void applyAilment(String ailmentId, LivingEntity target, int durationInSeconds, int damage, int maxStacks, int absoluteMaxStacks) {
+    public static void applyAilment(String ailmentId, LivingEntity attacker, LivingEntity target, int durationInSeconds, int damage, int maxStacks, int absoluteMaxStacks) {
         var ailmentDataContainer = target.getCapability(AilmentDataContainerCapability.INSTANCE).resolve().orElse(null);
 
         if(ailmentDataContainer == null || !ElementalsAPI.getAllAilmentNames().contains(ailmentId)) return;
 
-        var newAilmentInstance = new AilmentInstance(target, durationInSeconds, damage, maxStacks, absoluteMaxStacks);
+        var newAilmentInstance = new AilmentInstance(attacker, target, durationInSeconds, damage, maxStacks, absoluteMaxStacks);
         if(!ailmentDataContainer.containsAilment(ailmentId)) ailmentDataContainer.addAilment(ailmentId, newAilmentInstance);
         //else if ailment instance's stack count is less than ailment's maximum stack count, add stack
             //if ailment allows refresh, refresh duration
@@ -49,13 +49,13 @@ public class AilmentApplier {
         ElementalsAPIMod.LOGGER.info("apply ailment #2 called");
     }
 
-    public static void applyAilment(String ailmentId, LivingEntity target, int sourceDamage) {
+    public static void applyAilment(String ailmentId, LivingEntity attacker, LivingEntity target, int sourceDamage) {
         //...
         var ailmentDataContainer = target.getCapability(AilmentDataContainerCapability.INSTANCE).resolve().orElse(null);
 
         if(ailmentDataContainer == null || !ElementalsAPI.getAllAilmentNames().contains(ailmentId)) return;
 
-        var newAilmentInstance = new AilmentInstance(target, ailmentId, sourceDamage);
+        var newAilmentInstance = new AilmentInstance(attacker, target, ailmentId, sourceDamage);
         if(!ailmentDataContainer.containsAilment(ailmentId)) ailmentDataContainer.addAilment(ailmentId, newAilmentInstance);
         //else if ailment instance's stack count is less than ailment's maximum stack count, add stack
         //if ailment allows refresh, refresh duration

@@ -22,12 +22,14 @@ public class AilmentDataContainer {
 
             instance.tickDuration();
             //forgot this part vvv which is why bleed wasn't working :sob:
-            instance.onTick();
+            instance.attackerOnTick();
+            instance.defenderOnTick();
 
             //if duration = 0, call expire function
             //Ghostflame from Rabbit & Steel deals an arbitrary damage value when it expires
             if(instance.getRemainingDurationInTicks() <= 0) {
-                instance.onExpire();
+                instance.attackerOnExpire();
+                instance.defenderOnExpire();
                 ailmentsAffectedBy.remove(key);
             }
         }
