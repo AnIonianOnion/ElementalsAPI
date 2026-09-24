@@ -12,24 +12,52 @@ import org.jetbrains.annotations.Nullable;
 
 public class AilmentDamageSource extends DamageSource {
 
-    public AilmentDamageSource(Holder<DamageType> p_270475_) {
-        super(p_270475_);
+    public AilmentDamageSource(Holder<DamageType> type) {
+        super(type);
     }
 
-    public AilmentDamageSource(Holder<DamageType> p_270811_, @Nullable Entity p_270660_) {
-        super(p_270811_, p_270660_);
+    /*
+    from DamageSource class:
+
+    public DamageSource(Holder<DamageType> p_270811_, @Nullable Entity p_270660_) {
+      this(p_270811_, p_270660_, p_270660_);
+   }
+
+   calls 3-parameter constructor, and we know the 2nd and 3rd arguments passed in must be the direct and causing entity, but p_270660_ is the same for both.
+   So either way, it must be the causing entity.
+     */
+    public AilmentDamageSource(Holder<DamageType> type, @Nullable Entity directEntityAndCausingEntity) {
+        super(type, directEntityAndCausingEntity);
     }
 
-    public AilmentDamageSource(Holder<DamageType> p_270690_, Vec3 p_270579_) {
-        super(p_270690_, p_270579_);
+    public AilmentDamageSource(Holder<DamageType> type, Vec3 damageSourcePosition) {
+        super(type, damageSourcePosition);
     }
 
-    public AilmentDamageSource(Holder<DamageType> p_270818_, @Nullable Entity p_270162_, @Nullable Entity p_270115_) {
-        super(p_270818_, p_270162_, p_270115_);
+    /*
+    from DamageSource class:
+
+    public DamageSource(Holder<DamageType> p_270818_, @Nullable Entity p_270162_, @Nullable Entity p_270115_) {
+      this(p_270818_, p_270162_, p_270115_, (Vec3)null);
+
+    calls 4-parameter constructor below.
+   }
+     */
+    public AilmentDamageSource(Holder<DamageType> type, @Nullable Entity directEntity, @Nullable Entity causingEntity) {
+        super(type, directEntity, causingEntity);
     }
 
-    public AilmentDamageSource(Holder<DamageType> p_270906_, @Nullable Entity p_270796_, @Nullable Entity p_270459_, @Nullable Vec3 p_270623_) {
-        super(p_270906_, p_270796_, p_270459_, p_270623_);
+    /*
+    from DamageSource class:
+
+    public DamageSource(Holder<DamageType> p_270906_, @Nullable Entity p_270796_, @Nullable Entity p_270459_, @Nullable Vec3 p_270623_) {
+      this.type = p_270906_;
+      this.causingEntity = p_270459_;
+      this.directEntity = p_270796_;
+      this.damageSourcePosition = p_270623_;
+     */
+    public AilmentDamageSource(Holder<DamageType> type, @Nullable Entity directEntity, @Nullable Entity causingEntity, @Nullable Vec3 damageSourcePosition) {
+        super(type, directEntity, causingEntity, damageSourcePosition);
     }
 
     /*

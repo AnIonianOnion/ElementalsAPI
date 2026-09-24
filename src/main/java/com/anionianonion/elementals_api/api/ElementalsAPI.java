@@ -1,10 +1,13 @@
 package com.anionianonion.elementals_api.api;
 
+import com.anionianonion.elementals_api.AilmentDamageSource;
+import com.anionianonion.elementals_api.ModDamageTypes;
 import com.anionianonion.elementals_api.data_classes.Ailment;
 import com.anionianonion.elementals_api.data_classes.Element;
 import com.anionianonion.elementals_api.data_classes.ElementCategory;
 import com.anionianonion.elementals_api.registries.*;
 import com.google.common.collect.HashMultimap;
+import net.minecraft.world.entity.LivingEntity;
 
 import java.util.HashMap;
 import java.util.Set;
@@ -40,7 +43,7 @@ public class ElementalsAPI {
     }
 
     public static Ailment regAilmentAndGet(String ailmentName) {
-        AilmentRegistry.regAilmentAndGet(ailmentName);
+        return AilmentRegistry.regAilmentAndGet(ailmentName);
     }
 
     public static void regAilment(Ailment ailment) {
@@ -79,4 +82,14 @@ public class ElementalsAPI {
         return AilmentRegistry.containsKey(ailmentName);
     }
 
+    public static void hurtWithAilment(LivingEntity ailmentInflicter, LivingEntity target, float amount) {
+        if(amount == 0) return;
+        target.hurt(
+            new AilmentDamageSource(
+                AilmentDamageSource.getHolderFromResource(target, ModDamageTypes.AILMENT_DAMAGE),
+                ailmentInflicter
+            ),
+        amount);
+        target.hurtDuration = 0;
+    }
 }

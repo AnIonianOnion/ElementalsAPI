@@ -5,8 +5,10 @@ package com.anionianonion.elementals_api.data_classes;
 
 import com.anionianonion.elementals_api.ElementalsAPIMod;
 import net.minecraft.world.entity.LivingEntity;
+import org.apache.logging.log4j.util.TriConsumer;
 
 import java.util.function.BiConsumer;
+import java.util.function.Function;
 
 //PoE style ailments
 //ignite -> 90% of base fire damage per second for 4 seconds
@@ -30,6 +32,11 @@ public class Ailment {
     private BiConsumer<LivingEntity, AilmentInstance> attackerOnApply = (attacker, ailmentInstance) -> {};
     private BiConsumer<LivingEntity, AilmentInstance> attackerOnTick = (attacker, ailmentInstance) -> {};
     private BiConsumer<LivingEntity, AilmentInstance> attackerOnExpire = (attacker, ailmentInstance) -> {};
+
+
+    //need a function that inputs:
+    // 1. a function that determines effect strength of ailment based on attacker and defender's stats
+    TriConsumer<LivingEntity, LivingEntity, AilmentInstance> effectStrengthFunction = (attacker, defender, ailmentInstance) -> {};
 
     //there's too many field variables to set them in a constructor. It's probably better to make this the only constructor.
     public Ailment(String name) {
