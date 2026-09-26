@@ -32,6 +32,11 @@ public class AilmentDataContainer {
                 instance.defenderOnExpire();
                 ailmentsAffectedBy.remove(key);
             }
+
+            //for stack detonation. Assuming that detonation already happened because stackCount is 0.
+            else if(instance.getStacksCount() <= 0) {
+                ailmentsAffectedBy.remove(key);
+            }
         }
     }
 

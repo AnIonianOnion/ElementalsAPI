@@ -56,7 +56,11 @@ public class AilmentApplier {
         if(ailmentDataContainer == null || !ElementalsAPI.getAllAilmentNames().contains(ailmentId)) return;
 
         var newAilmentInstance = new AilmentInstance(attacker, target, ailmentId, sourceDamage);
-        if(!ailmentDataContainer.containsAilment(ailmentId)) ailmentDataContainer.addAilment(ailmentId, newAilmentInstance);
+        if(!ailmentDataContainer.containsAilment(ailmentId)) {
+            ailmentDataContainer.addAilment(ailmentId, newAilmentInstance);
+            newAilmentInstance.attackerOnApply();
+            newAilmentInstance.defenderOnApply();
+        }
         //else if ailment instance's stack count is less than ailment's maximum stack count, add stack
         //if ailment allows refresh, refresh duration
         //else if at max stacks,

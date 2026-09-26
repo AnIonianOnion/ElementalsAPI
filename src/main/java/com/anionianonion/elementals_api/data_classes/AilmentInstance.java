@@ -7,28 +7,31 @@ import net.minecraft.world.entity.LivingEntity;
 
 import java.util.HashSet;
 import java.util.Set;
-import java.util.function.BiConsumer;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 //a copy of an Ailment that is currently affecting a LivingEntity
 public class AilmentInstance {
 
-    private final LivingEntity attacker;
-
+    public final LivingEntity attacker;
     //this ailment instance is stored on the entity's AilmentDataContainer capability, but it's still needed in order to call onExpire & onTick functions
-    private final LivingEntity defender;
+    public final LivingEntity defender;
+    public int sourceDamage;
 
-    private BiConsumer<LivingEntity, AilmentInstance> attackerOnApply = (attacker, ailmentInstance) -> {};
-    private BiConsumer<LivingEntity, AilmentInstance> attackerOnTick = (attacker, ailmentInstance) -> {};
-    private BiConsumer<LivingEntity, AilmentInstance> attackerOnExpire = (attacker, ailmentInstance) -> {};
+    private Consumer<AilmentInstance> attackerOnApply = (ailmentInstance) -> {};
+    private Consumer<AilmentInstance> attackerOnTick = (ailmentInstance) -> {};
+    private Consumer<AilmentInstance> attackerOnExpire = (ailmentInstance) -> {};
 
-    private BiConsumer<LivingEntity, AilmentInstance> defenderOnApply = (defender, ailmentInstance) -> {};
-    private BiConsumer<LivingEntity, AilmentInstance> defenderOnTick = (defender, ailmentInstance) -> {};
-    private BiConsumer<LivingEntity, AilmentInstance> defenderOnExpire = (defender, ailmentInstance) -> {};
+    private Consumer<AilmentInstance> defenderOnApply = (ailmentInstance) -> {};
+    private Consumer<AilmentInstance> defenderOnTick = (ailmentInstance) -> {};
+    private Consumer<AilmentInstance> defenderOnExpire = (ailmentInstance) -> {};
+
+    private Function<AilmentInstance, Float> effectStrengthFunction = ailmentInstance -> 0f;
 
     private int stacksCount, maxStacksCount, absoluteMaxStacksCount;
     private int remainingDurationInTicks;
-    private int baseDamage;
-    private float dpsMultiplier;
+
+    private float ratioOfDPStoHitDamage;
 
     private String ailmentSourceName;
     private String elementIdOfSourceAilment;
@@ -38,7 +41,7 @@ public class AilmentInstance {
         this.attacker = attacker;
         this.defender = target;
         this.remainingDurationInTicks = durationInSeconds * 20;
-        this.baseDamage = baseDamagePerStack;
+        this.sourceDamage = baseDamagePerStack;
         this.stacksCount = 1;
 
         if(absoluteMaxStacksCount <= 0) this.absoluteMaxStacksCount = 1;
@@ -49,18 +52,20 @@ public class AilmentInstance {
     }
 
     //used when there is a default behavior for an ailment, which is why we use the ailmentId, in order to look up the ailment.
-    public AilmentInstance(LivingEntity attacker, LivingEntity target, String ailmentIdToCopyFrom, int sourceBaseDamage) {
+    public AilmentInstance(LivingEntity attacker, LivingEntity target, String ailmentIdToCopyFrom, int sourceDamage) {
         this.attacker = attacker;
         this.defender = target;
+        this.sourceDamage = sourceDamage;
+        this.stacksCount = 1;
 
         Ailment source = ElementalsAPI.getAilment(ailmentIdToCopyFrom);
         if(source == null) return;
 
-        this.ailmentSourceName = source.getName();
-        this.elementIdOfSourceAilment = source.getElementItComesFrom().getName();
+        this.ailmentSourceName = source.getId();
+        this.elementIdOfSourceAilment = source.getElementItComesFrom() != null ? source.getElementItComesFrom().getId() : null;
         this.remainingDurationInTicks = source.getDurationInSeconds() * 20;
-        this.baseDamage = sourceBaseDamage;
-        this.dpsMultiplier = source.getRatioOfDPStoHitDamage();
+
+        this.ratioOfDPStoHitDamage = source.getRatioOfDPStoHitDamage();
 
         this.attackerOnApply = source.getAttackerOnApply();
         this.attackerOnTick = source.getAttackerOnTick();
@@ -68,6 +73,8 @@ public class AilmentInstance {
         this.defenderOnApply = source.getDefenderOnApply();
         this.defenderOnTick = source.getDefenderOnTick();
         this.defenderOnExpire = source.getDefenderOnExpire();
+
+        this.effectStrengthFunction = source.getEffectStrengthFunction();
     }
 
     //stacks
@@ -80,16 +87,16 @@ public class AilmentInstance {
     public int getMaxStacksCount() {
         return this.maxStacksCount;
     }
-    public void setMaxStacksCount(int maxStacks) {
-        if(maxStacks <= 0) this.maxStacksCount = 1;
-        else this.maxStacksCount = Math.min(maxStacks, this.absoluteMaxStacksCount);
+    public void setMaxStacksCount(int maxStacksCount) {
+        if(maxStacksCount <= 0) this.maxStacksCount = 1;
+        else this.maxStacksCount = Math.min(maxStacksCount, this.absoluteMaxStacksCount);
     }
     public int getAbsoluteMaxStacksCount() {
         return this.absoluteMaxStacksCount;
     }
-    public void setAbsoluteMaxStacksCount(int absoluteMaxStacks) {
-        if(absoluteMaxStacks <= 0) this.absoluteMaxStacksCount = 1;
-        else this.absoluteMaxStacksCount = absoluteMaxStacks;
+    public void setAbsoluteMaxStacksCount(int absoluteMaxStacksCount) {
+        if(absoluteMaxStacksCount <= 0) this.absoluteMaxStacksCount = 1;
+        else this.absoluteMaxStacksCount = absoluteMaxStacksCount;
     }
     //ticks
     public int getRemainingDurationInTicks() {
@@ -101,88 +108,101 @@ public class AilmentInstance {
     public void tickDuration() {
         this.remainingDurationInTicks--;
     }
-    public float getDpsMultiplier() {
-        return this.dpsMultiplier;
+    public float getRatioOfDPStoHitDamage() {
+        return this.ratioOfDPStoHitDamage;
     }
-    public void setDpsMultiplier(float multiplier) {
-        this.dpsMultiplier = multiplier;
+    public void setRatioOfDPStoHitDamage(float multiplier) {
+        this.ratioOfDPStoHitDamage = multiplier;
     }
 
 
     /// Higher Order Functions
 
     /// Attacker
-    public BiConsumer<LivingEntity, AilmentInstance> getAttackerOnApply() {
+    public Consumer<AilmentInstance> getAttackerOnApply() {
         return this.attackerOnApply;
     }
-    public void setAttackerOnApply(BiConsumer<LivingEntity, AilmentInstance> attackerOnApply) {
+    public void setAttackerOnApply(Consumer<AilmentInstance> attackerOnApply) {
         this.attackerOnApply = attackerOnApply;
     }
     public void attackerOnApply() {
-        this.attackerOnApply.accept(attacker, this);
+        this.attackerOnApply.accept(this);
     }
 
-    public BiConsumer<LivingEntity, AilmentInstance> getAttackerOnTick() { return this.attackerOnTick; }
-    public void setAttackerOnTick(BiConsumer<LivingEntity, AilmentInstance> attackerOnTick) {
+    public Consumer<AilmentInstance> getAttackerOnTick() { return this.attackerOnTick; }
+    public void setAttackerOnTick(Consumer<AilmentInstance> attackerOnTick) {
         this.attackerOnTick = attackerOnTick;
     }
     public void attackerOnTick() {
-        this.attackerOnTick.accept(attacker, this);
+        this.attackerOnTick.accept(this);
     }
 
-    public BiConsumer<LivingEntity, AilmentInstance> getAttackerOnExpire() { return this.attackerOnExpire; }
-    public void setAttackerOnExpire(BiConsumer<LivingEntity, AilmentInstance> attackerOnExpire) {
+    public Consumer<AilmentInstance> getAttackerOnExpire() { return this.attackerOnExpire; }
+    public void setAttackerOnExpire(Consumer<AilmentInstance> attackerOnExpire) {
         this.attackerOnExpire = attackerOnExpire;
     }
     public void attackerOnExpire() {
-        this.attackerOnExpire.accept(attacker, this);
+        this.attackerOnExpire.accept(this);
     }
 
     /// Defender
-    public BiConsumer<LivingEntity, AilmentInstance> getDefenderOnApply() {
+    public Consumer<AilmentInstance> getDefenderOnApply() {
         return this.defenderOnApply;
     }
-    public void setDefenderOnApply(BiConsumer<LivingEntity, AilmentInstance> defenderOnApply) {
+    public void setDefenderOnApply(Consumer<AilmentInstance> defenderOnApply) {
         this.defenderOnApply = defenderOnApply;
     }
     public void defenderOnApply() {
-        this.defenderOnApply.accept(defender, this);
+        this.defenderOnApply.accept(this);
     }
 
-    public BiConsumer<LivingEntity, AilmentInstance> getDefenderOnTick() {
+    public Consumer<AilmentInstance> getDefenderOnTick() {
         return this.defenderOnTick;
     }
-    public void setDefenderOnTick(BiConsumer<LivingEntity, AilmentInstance> defenderOnTick) {
+    public void setDefenderOnTick(Consumer<AilmentInstance> defenderOnTick) {
         this.defenderOnTick = defenderOnTick;
     }
     public void defenderOnTick() {
-        this.defenderOnTick.accept(defender, this);
+        this.defenderOnTick.accept(this);
     }
 
-    public BiConsumer<LivingEntity, AilmentInstance> getDefenderOnExpire() {
+    public Consumer<AilmentInstance> getDefenderOnExpire() {
         return this.defenderOnExpire;
     }
-    public void setDefenderOnExpire(BiConsumer<LivingEntity, AilmentInstance> defenderOnExpire) {
+    public void setDefenderOnExpire(Consumer<AilmentInstance> defenderOnExpire) {
         this.defenderOnExpire = defenderOnExpire;
     }
     public void defenderOnExpire() {
-        this.defenderOnExpire.accept(defender, this);
+        this.defenderOnExpire.accept(this);
+    }
+
+    public Function<AilmentInstance, Float> getEffectStrengthFunction() {
+        return this.effectStrengthFunction;
+    }
+    public void setEffectStrengthFunction(Function<AilmentInstance, Float> effectStrengthFunction) {
+        this.effectStrengthFunction = effectStrengthFunction;
+    }
+    public float getEffectStrength() {
+        return this.effectStrengthFunction.apply(this);
     }
 
     public int getFinalDPSPerStack() {
         Set<String> damageTags = new HashSet<>();
         damageTags.add("damage");
         damageTags.add("self");
-        damageTags.add("dot");
+        damageTags.add("damaging");
+        damageTags.add("ailment");
 
-        if(this.ailmentSourceName != null && this.elementIdOfSourceAilment != null) {
+        if(this.ailmentSourceName != null) {
             damageTags.add(this.ailmentSourceName);
+        }
+        if(this.elementIdOfSourceAilment != null) {
             damageTags.add(this.elementIdOfSourceAilment);
         }
 
         Set<ResourceLocation> attributeRLs = AdvancedARPGAttributesAPI.getFilteredAttributes(damageTags);
-        var data = AdvancedARPGAttributesAPI.getData(this.defender, attributeRLs);
+        var data = AdvancedARPGAttributesAPI.getData(this.attacker, attributeRLs);
 
-        return Math.round(this.baseDamage * (1 + data[1]) * (1 + data[2]));
+        return Math.round(this.stacksCount * this.sourceDamage * (1 + data[1]) * (1 + data[2]));
     }
 }

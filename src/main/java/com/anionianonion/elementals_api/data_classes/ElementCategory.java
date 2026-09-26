@@ -5,16 +5,16 @@ import java.util.Set;
 
 public class ElementCategory {
 
-    private final String name;
+    private final String id;
     //global default vv
     private Set<Element> elements = new HashSet<>();
 
     public ElementCategory(String name) {
-        this.name = name;
+        this.id = name;
     }
 
-    public String getName() {
-        return this.name;
+    public String getId() {
+        return this.id;
     }
 
     public Set<Element> getElements() {

@@ -47,7 +47,7 @@ public class ElementalsAPI {
     }
 
     public static void regAilment(Ailment ailment) {
-        AilmentRegistry.regAilment(ailment.getName(), ailment);
+        AilmentRegistry.regAilment(ailment.getId(), ailment);
     }
 
     public static Element getElement(String elementName) {
@@ -90,6 +90,8 @@ public class ElementalsAPI {
                 ailmentInflicter
             ),
         amount);
-        target.hurtDuration = 0;
+        //vv doesn't work: did https://www.reddit.com/r/MinecraftCommands/comments/12fwvor/adding_a_damage_type_that_ignores_immunity_frames instead
+        // target.hurtDuration = 0;
+
     }
 }

@@ -1,63 +1,66 @@
 package com.anionianonion.elementals_api.data_classes;
 
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 //Rabbit and Steel style ailments
-
-import com.anionianonion.elementals_api.ElementalsAPIMod;
-import net.minecraft.world.entity.LivingEntity;
-import org.apache.logging.log4j.util.TriConsumer;
-
-import java.util.function.BiConsumer;
-import java.util.function.Function;
+//Paint - reapplies a random ailment once Paint expires
 
 //PoE style ailments
 //ignite -> 90% of base fire damage per second for 4 seconds
 //poison -> 20% of base phys + base chaos damage per second for 2 seconds
 public class Ailment {
 
-    private final String name;
-    //global default vv
+    //final or effectively final vv
+    private final String id;
     private Element elementItComesFrom;
-    private int durationInSeconds;
     private boolean isDamagingAilment;
     private boolean canBeInflictedFromCrit;
-    private int maxStacksOnEntity;
     private boolean guaranteeInflictChance;
+    private int absoluteMaxStacksCount;
+
+    //global defaults vv
+    private int durationInSeconds = 3;
     private float ratioOfDPStoHitDamage = 1;
+    private int maxStacksCount = 1;
 
-    private BiConsumer<LivingEntity, AilmentInstance> defenderOnApply = (defender, ailmentInstance) -> {};
-    private BiConsumer<LivingEntity, AilmentInstance> defenderOnTick = (defender, ailmentInstance) -> {};
-    private BiConsumer<LivingEntity, AilmentInstance> defenderOnExpire = (defender, ailmentInstance) -> {};
+    //switched to just a consumer, because AilmentInstance now keeps track of the attacker and defender.
+    //deciding to keep defender&attacker onApply&onTick&onExpire separate for more clarity when debugging.
+    private Consumer<AilmentInstance> defenderOnApply = (ailmentInstance) -> {};
+    private Consumer<AilmentInstance> defenderOnTick = (ailmentInstance) -> {};
+    private Consumer<AilmentInstance> defenderOnExpire = (ailmentInstance) -> {};
 
-    private BiConsumer<LivingEntity, AilmentInstance> attackerOnApply = (attacker, ailmentInstance) -> {};
-    private BiConsumer<LivingEntity, AilmentInstance> attackerOnTick = (attacker, ailmentInstance) -> {};
-    private BiConsumer<LivingEntity, AilmentInstance> attackerOnExpire = (attacker, ailmentInstance) -> {};
-
+    private Consumer<AilmentInstance> attackerOnApply = (ailmentInstance) -> {};
+    private Consumer<AilmentInstance> attackerOnTick = (ailmentInstance) -> {};
+    private Consumer<AilmentInstance> attackerOnExpire = (ailmentInstance) -> {};
 
     //need a function that inputs:
     // 1. a function that determines effect strength of ailment based on attacker and defender's stats
-    TriConsumer<LivingEntity, LivingEntity, AilmentInstance> effectStrengthFunction = (attacker, defender, ailmentInstance) -> {};
+    private Function<AilmentInstance, Float> effectStrengthFunction = (ailmentInstance) -> 0f;
 
     //there's too many field variables to set them in a constructor. It's probably better to make this the only constructor.
-    public Ailment(String name) {
-        this.name = name;
+    public Ailment(String id) {
+        this.id = id;
     }
 
-    public String getName() {
-        return this.name;
+    public String getId() {
+        return this.id;
     }
+
     public Element getElementItComesFrom() {
         return this.elementItComesFrom;
     }
     public void setElementItComesFrom(Element element) {
         this.elementItComesFrom = element;
     }
+
     public boolean isDamagingAilment() {
         return this.isDamagingAilment;
     }
     public void setDamagingAilment(boolean damagingAilment) {
         this.isDamagingAilment = damagingAilment;
     }
+
     public boolean canBeInflictedFromCrit() {
         return this.canBeInflictedFromCrit;
     }
@@ -65,6 +68,20 @@ public class Ailment {
         this.canBeInflictedFromCrit = canBeInflictedFromCrit;
     }
 
+    public boolean isGuaranteedInflictChance() {
+        return this.guaranteeInflictChance;
+    }
+    public void setGuaranteeInflictChance(boolean guaranteeInflictChance) {
+        this.guaranteeInflictChance = guaranteeInflictChance;
+    }
+
+    public int getAbsoluteMaxStacksCount() {
+        return this.absoluteMaxStacksCount;
+    }
+    public void setAbsoluteMaxStacksCount(int absoluteMaxStacksCount) {
+        if(absoluteMaxStacksCount <= 0) this.absoluteMaxStacksCount = 1;
+        else this.absoluteMaxStacksCount = absoluteMaxStacksCount;
+    }
 
     public int getDurationInSeconds() {
         return this.durationInSeconds;
@@ -72,63 +89,65 @@ public class Ailment {
     public void setDurationInSeconds(int durationInSeconds) {
         this.durationInSeconds = durationInSeconds;
     }
-    public int getMaxStacksOnEntity() {
-        return this.maxStacksOnEntity;
-    }
-    public void setMaxStacksOnEntity(int maxStacksOnEntity) {
-        this.maxStacksOnEntity = maxStacksOnEntity;
-    }
-    public boolean isGuaranteeInflictChance() {
-        return this.guaranteeInflictChance;
-    }
-    public void setGuaranteeInflictChance(boolean guaranteeInflictChance) {
-        this.guaranteeInflictChance = guaranteeInflictChance;
-    }
-
-    public BiConsumer<LivingEntity, AilmentInstance> getAttackerOnApply() {
-        return this.attackerOnApply;
-    }
-    public void setAttackerOnApply(BiConsumer<LivingEntity, AilmentInstance> attackerOnApply) {
-        this.attackerOnApply = attackerOnApply;
-    }
-    public BiConsumer<LivingEntity, AilmentInstance> getAttackerOnTick() {
-        return this.attackerOnTick;
-    }
-    public void setAttackerOnTick(BiConsumer<LivingEntity, AilmentInstance> attackerOnTick) {
-        this.attackerOnTick = attackerOnTick;
-    }
-    public BiConsumer<LivingEntity, AilmentInstance> getAttackerOnExpire() {
-        return attackerOnExpire;
-    }
-    public void setAttackerOnExpire(BiConsumer<LivingEntity, AilmentInstance> attackerOnExpire) {
-        this.attackerOnExpire = attackerOnExpire;
-    }
-
-    public BiConsumer<LivingEntity, AilmentInstance> getDefenderOnApply() {
-        return this.defenderOnApply;
-    }
-    public void setDefenderOnApply(BiConsumer<LivingEntity, AilmentInstance> defenderOnApply) {
-        this.defenderOnApply = defenderOnApply;
-    }
-    public BiConsumer<LivingEntity, AilmentInstance> getDefenderOnTick() {
-        return this.defenderOnTick;
-    }
-    public void setDefenderOnTick(BiConsumer<LivingEntity, AilmentInstance> defenderOnTick) {
-        this.defenderOnTick = defenderOnTick;
-    }
-    public BiConsumer<LivingEntity, AilmentInstance> getDefenderOnExpire() {
-        return this.defenderOnExpire;
-    }
-    public void setDefenderOnExpire(BiConsumer<LivingEntity, AilmentInstance> defenderOnExpire) {
-        this.defenderOnExpire = defenderOnExpire;
-    }
-
 
     public float getRatioOfDPStoHitDamage() {
         return this.ratioOfDPStoHitDamage;
     }
     public void setRatioOfDPStoHitDamage(float ratioOfDPStoHitDamage) {
         this.ratioOfDPStoHitDamage = ratioOfDPStoHitDamage;
+    }
+
+    public int getMaxStacksCount() {
+        return this.maxStacksCount;
+    }
+    public void setMaxStacksCount(int maxStacksCount) {
+        if(maxStacksCount <= 0) this.maxStacksCount = 1;
+        else this.maxStacksCount = Math.min(maxStacksCount, this.absoluteMaxStacksCount);
+    }
+
+    public Consumer<AilmentInstance> getAttackerOnApply() {
+        return this.attackerOnApply;
+    }
+    public void setAttackerOnApply(Consumer<AilmentInstance> attackerOnApply) {
+        this.attackerOnApply = attackerOnApply;
+    }
+    public Consumer<AilmentInstance> getAttackerOnTick() {
+        return this.attackerOnTick;
+    }
+    public void setAttackerOnTick(Consumer<AilmentInstance> attackerOnTick) {
+        this.attackerOnTick = attackerOnTick;
+    }
+    public Consumer<AilmentInstance> getAttackerOnExpire() {
+        return attackerOnExpire;
+    }
+    public void setAttackerOnExpire(Consumer<AilmentInstance> attackerOnExpire) {
+        this.attackerOnExpire = attackerOnExpire;
+    }
+
+    public Consumer<AilmentInstance> getDefenderOnApply() {
+        return this.defenderOnApply;
+    }
+    public void setDefenderOnApply(Consumer<AilmentInstance> defenderOnApply) {
+        this.defenderOnApply = defenderOnApply;
+    }
+    public Consumer<AilmentInstance> getDefenderOnTick() {
+        return this.defenderOnTick;
+    }
+    public void setDefenderOnTick(Consumer<AilmentInstance> defenderOnTick) {
+        this.defenderOnTick = defenderOnTick;
+    }
+    public Consumer<AilmentInstance> getDefenderOnExpire() {
+        return this.defenderOnExpire;
+    }
+    public void setDefenderOnExpire(Consumer<AilmentInstance> defenderOnExpire) {
+        this.defenderOnExpire = defenderOnExpire;
+    }
+
+    public Function<AilmentInstance, Float> getEffectStrengthFunction() {
+        return this.effectStrengthFunction;
+    }
+    public void setEffectStrengthFunction(Function<AilmentInstance, Float> effectStrengthFunction) {
+        this.effectStrengthFunction = effectStrengthFunction;
     }
 }
 

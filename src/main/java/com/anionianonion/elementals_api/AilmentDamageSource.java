@@ -12,6 +12,7 @@ import org.jetbrains.annotations.Nullable;
 
 public class AilmentDamageSource extends DamageSource {
 
+    //https://www.reddit.com/r/MinecraftCommands/comments/12fwvor/adding_a_damage_type_that_ignores_immunity_frames/
     public AilmentDamageSource(Holder<DamageType> type) {
         super(type);
     }

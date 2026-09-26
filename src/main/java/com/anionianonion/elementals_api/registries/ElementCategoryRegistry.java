@@ -9,7 +9,7 @@ public class ElementCategoryRegistry {
     private static final HashMap<String, ElementCategory> elementCategoryRegistry = new HashMap<>();
 
     public static void regAilmentCategory(ElementCategory elementCategory) {
-        elementCategoryRegistry.put(elementCategory.getName(), elementCategory);
+        elementCategoryRegistry.put(elementCategory.getId(), elementCategory);
     }
 
     public static HashMap<String, ElementCategory> get() {

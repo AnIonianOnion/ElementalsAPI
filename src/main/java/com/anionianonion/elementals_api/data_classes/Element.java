@@ -5,18 +5,18 @@ import java.util.Set;
 
 public class Element {
 
-    private final String name;
+    private final String id;
     private ElementCategory elementCategory;
 
     //global default vv
     private Set<Ailment> ailments = new HashSet<>();
 
-    public Element(String name) {
-        this.name = name;
+    public Element(String id) {
+        this.id = id;
     }
 
-    public String getName() {
-        return this.name;
+    public String getId() {
+        return this.id;
     }
 
     public ElementCategory getElementCategory() {

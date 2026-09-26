@@ -31,7 +31,7 @@ public class Init {
         var burning = ElementalsAPI.getAilment("burning");
         burning.setDamagingAilment(true);
         burning.setCanBeInflictedFromCrit(true);
-        burning.setMaxStacksOnEntity(1);
+        burning.setMaxStacksCount(1);
 
         ElementalsAPI.pairAilmentToElement("burning", "fire");
     }
