@@ -17,11 +17,12 @@ public class ElementalsAPI {
     public static HashMap<String, Element> getElementsRegistry() {
         return ElementRegistry.get();
     }
-
     public static HashMap<String, Ailment> getAilmentsRegistry() {
         return AilmentRegistry.get();
     }
-
+    public static HashMap<String, ElementCategory> getElementCategoriesRegistry() {
+        return ElementCategoryRegistry.get();
+    }
     public static HashMultimap<String, String> getElementsToAilmentsRegistry() {
         return DefaultElementToAilmentsRegistry.get();
     }
@@ -29,9 +30,11 @@ public class ElementalsAPI {
     public static Set<String> getAllElementNames() {
         return getElementsRegistry().keySet();
     }
-
     public static Set<String> getAllAilmentNames() {
         return getAilmentsRegistry().keySet();
+    }
+    public static Set<String> getAllElementCategoryNames() {
+        return getElementCategoriesRegistry().keySet();
     }
 
     public static void regElement(String elementName) {
@@ -66,8 +69,8 @@ public class ElementalsAPI {
         DefaultElementToAilmentsRegistry.setAilmentsForElement(ailments, elementName);
     }
 
-    public static void regAilmentCategory(ElementCategory elementCategory) {
-        ElementCategoryRegistry.regAilmentCategory(elementCategory);
+    public static void regElementCategory(ElementCategory elementCategory) {
+        ElementCategoryRegistry.regElementCategory(elementCategory);
     }
 
     public static void setElementsForElementCategory(Set<String> elementNames, String elementCategoryName) {

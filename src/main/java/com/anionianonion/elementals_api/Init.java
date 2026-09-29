@@ -16,7 +16,7 @@ public class Init {
         ElementalsAPI.regElement("ice");
         ElementalsAPI.regElement("lightning");
 
-        ElementalsAPI.regAilmentCategory(new ElementCategory("elemental"));
+        ElementalsAPI.regElementCategory(new ElementCategory("elemental"));
         var elementalIds = new HashSet<String>();
         elementalIds.add("fire");
         elementalIds.add("ice");
